@@ -36,7 +36,7 @@ const ThreeScene = () => {
     // Globe
     const globeGeometry = new THREE.SphereGeometry(2.5, 64, 64);
     const globeMaterial = new THREE.MeshPhongMaterial({
-      color: 0x0000b3,
+      color: 0x87cefa,
       wireframe: true,
       transparent: true,
       opacity: 0.2
@@ -70,7 +70,7 @@ const ThreeScene = () => {
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
         size: 0.035,
-        color: 0x4d4dff,
+        color: 0xadd8e6,
         transparent: true,
         blending: THREE.AdditiveBlending,
         opacity: 0.9,
@@ -196,9 +196,9 @@ const ThreeScene = () => {
     const globe = globeRef.current;
     if (globe) {
       if(isHovering) {
-        (globe.material as THREE.MeshPhongMaterial).color.set(0x6666ff);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0xADD8E6);
       } else {
-        (globe.material as THREE.MeshPhongMaterial).color.set(0x0000b3);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0x87cefa);
       }
     }
   }, [isHovering]);
