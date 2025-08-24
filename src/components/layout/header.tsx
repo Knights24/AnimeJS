@@ -15,7 +15,7 @@ const Header = () => {
           <Code className="h-6 w-6 text-primary" />
           <span className="font-bold font-headline">Vertex Portfolio</span>
         </a>
-        <nav className="flex flex-1 items-center gap-6 text-sm">
+        <nav className="flex flex-1 items-center justify-center gap-6 text-sm">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -26,7 +26,9 @@ const Header = () => {
             </a>
           ))}
         </nav>
-        <ThemeToggle />
+        <div className="flex items-center justify-end flex-1">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

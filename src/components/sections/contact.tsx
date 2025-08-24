@@ -48,15 +48,15 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 lg:py-32">
+    <section id="contact" className="py-24 lg:py-32">
       <div className="container">
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Get in Touch</h2>
-          <p className="mx-auto mt-4 max-w-[700px] text-foreground/80 md:text-xl">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80 md:text-xl">
             Have a project in mind or just want to say hello? Drop me a line.
           </p>
         </div>
-        <div className="mx-auto max-w-xl">
+        <div className="mx-auto max-w-2xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -98,7 +98,7 @@ const Contact = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={form.formState.isSubmitting}>
+              <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>

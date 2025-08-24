@@ -45,13 +45,13 @@ const projectsData = [
 
 const Projects = () => {
   return (
-    <section id="projects" className="py-20 lg:py-32 bg-secondary">
+    <section id="projects" className="py-24 lg:py-32 bg-secondary">
       <div className="container">
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">My Work</h2>
-          <p className="mx-auto mt-4 max-w-[700px] text-foreground/80 md:text-xl">A selection of my projects that showcase my skills and passion.</p>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-foreground/80 md:text-xl">A selection of my projects that showcase my skills and passion.</p>
         </div>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-10 md:grid-cols-2">
           {projectsData.map((project) => (
             <Card key={project.title} className="bg-card transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 flex flex-col">
               <Image
@@ -63,8 +63,8 @@ const Projects = () => {
                 data-ai-hint={project.imageHint}
               />
               <CardHeader>
-                <CardTitle className="font-headline pt-4">{project.title}</CardTitle>
-                <CardDescription>{project.description}</CardDescription>
+                <CardTitle className="font-headline text-2xl">{project.title}</CardTitle>
+                <CardDescription className="text-base">{project.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow">
                 <div className="flex flex-wrap gap-2">
@@ -73,19 +73,17 @@ const Projects = () => {
                   ))}
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-end">
-                <div className="flex gap-2">
+              <CardFooter className="flex justify-end gap-2">
                   <a href={project.githubLink} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon">
+                    <Button variant="outline" size="icon">
                       <Github className="h-5 w-5" />
                     </Button>
                   </a>
                   <a href={project.liveLink} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon">
+                    <Button variant="outline" size="icon">
                       <ExternalLink className="h-5 w-5" />
                     </Button>
                   </a>
-                </div>
               </CardFooter>
             </Card>
           ))}
