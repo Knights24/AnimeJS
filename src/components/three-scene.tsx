@@ -7,6 +7,8 @@ import { useTheme } from 'next-themes';
 const ThreeScene = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
+  
+  const sceneRef = useRef<THREE.Scene | null>(null);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -14,6 +16,7 @@ const ThreeScene = () => {
     const currentMount = mountRef.current;
 
     const scene = new THREE.Scene();
+    sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(75, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
     camera.position.z = 5;
@@ -122,10 +125,14 @@ const ThreeScene = () => {
       dotGeometry.dispose();
       dotMaterial.dispose();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Update material color when theme changes
   useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene) return;
+      
     const globe = scene.children.find(child => child instanceof THREE.Mesh) as THREE.Mesh<THREE.SphereGeometry, THREE.MeshPhongMaterial> | undefined;
     if (globe) {
       globe.material.color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
