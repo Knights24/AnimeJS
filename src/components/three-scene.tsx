@@ -37,7 +37,7 @@ const ThreeScene = () => {
     // Globe
     const globeGeometry = new THREE.SphereGeometry(2.5, 64, 64);
     const globeMaterial = new THREE.MeshPhongMaterial({
-      color: theme === 'dark' ? 0x444444 : 0xcccccc,
+      color: theme === 'dark' ? 0x444444 : 0x555555,
       wireframe: true,
       transparent: true,
       opacity: 0.2
@@ -61,7 +61,7 @@ const ThreeScene = () => {
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
         size: 0.015,
-        color: theme === 'dark' ? 0x00aaff : 0x0055aa,
+        color: theme === 'dark' ? 0x00aaff : 0x0033aa,
         transparent: true,
         blending: THREE.AdditiveBlending,
     });
@@ -138,7 +138,7 @@ const ThreeScene = () => {
         }
       }
 
-      renderer.render(scene, cameraRef.current);
+      renderer.render(scene, cameraRef.current!);
     };
     animate();
 
@@ -177,12 +177,12 @@ const ThreeScene = () => {
       if(isHovering) {
         (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
       } else {
-        (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
+        (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x444444 : 0x555555);
       }
     }
     const points = pointsRef.current;
     if (points) {
-      (points.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+      (points.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0033aa);
     }
     const stars = starsRef.current;
     if (stars) {
