@@ -22,25 +22,54 @@ const ThreeScene = () => {
     renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     currentMount.appendChild(renderer.domElement);
-
-    const material = new THREE.MeshStandardMaterial({
-      color: theme === 'dark' ? 0xffffff : 0x1a1a1a,
-      roughness: 0.3,
-      metalness: 0.7 
-    });
     
-    const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 16);
-    const torusKnot = new THREE.Mesh(geometry, material);
-    scene.add(torusKnot);
+    // Globe
+    const globeGeometry = new THREE.SphereGeometry(2, 32, 32);
+    const globeMaterial = new THREE.MeshPhongMaterial({
+      color: theme === 'dark' ? 0x444444 : 0xcccccc,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.2
+    });
+    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+    scene.add(globe);
+
+    // Glowing dots
+    const dotCount = 200;
+    const dotVertices = [];
+    for (let i = 0; i < dotCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / dotCount);
+        const theta = Math.sqrt(dotCount * Math.PI) * phi;
+
+        const x = 2.1 * Math.cos(theta) * Math.sin(phi);
+        const y = 2.1 * Math.sin(theta) * Math.sin(phi);
+        const z = 2.1 * Math.cos(phi);
+        
+        dotVertices.push(x, y, z);
+    }
+
+    const dotGeometry = new THREE.BufferGeometry();
+    dotGeometry.setAttribute('position', new THREE.Float32BufferAttribute(dotVertices, 3));
+    
+    const dotMaterial = new THREE.PointsMaterial({
+        color: 0x00aaff,
+        size: 0.05,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        sizeAttenuation: true
+    });
+    const dots = new THREE.Points(dotGeometry, dotMaterial);
+    scene.add(dots);
+
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const pointLight1 = new THREE.PointLight(0xffffff, 50);
+    const pointLight1 = new THREE.PointLight(0x00aaff, 70);
     pointLight1.position.set(5, 5, 5);
     scene.add(pointLight1);
     
-    const pointLight2 = new THREE.PointLight(0xffffff, 50);
+    const pointLight2 = new THREE.PointLight(0xffffff, 30);
     pointLight2.position.set(-5, -5, -5);
     scene.add(pointLight2);
 
@@ -58,12 +87,12 @@ const ThreeScene = () => {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
       
-      torusKnot.rotation.y = elapsedTime * 0.1;
-      torusKnot.rotation.x = elapsedTime * 0.1;
+      globe.rotation.y = elapsedTime * 0.1;
+      dots.rotation.y = elapsedTime * 0.1;
 
       // Make it react to mouse movement
-      camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
-      camera.position.y += (mouseY * 2 - camera.position.y) * 0.02;
+      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.02;
+      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.02;
       camera.lookAt(scene.position);
 
       renderer.render(scene, camera);
@@ -88,21 +117,27 @@ const ThreeScene = () => {
         currentMount.removeChild(renderer.domElement);
       }
       renderer.dispose();
-      geometry.dispose();
-      material.dispose();
+      globeGeometry.dispose();
+      globeMaterial.dispose();
+      dotGeometry.dispose();
+      dotMaterial.dispose();
     };
   }, []);
   
   // Update material color when theme changes
   useEffect(() => {
-      const mesh = scene.children.find(child => child instanceof THREE.Mesh) as THREE.Mesh<THREE.TorusKnotGeometry, THREE.MeshStandardMaterial> | undefined;
-      if (mesh) {
-        mesh.material.color.set(theme === 'dark' ? 0xffffff : 0x1a1a1a);
-      }
+    const globe = scene.children.find(child => child instanceof THREE.Mesh) as THREE.Mesh<THREE.SphereGeometry, THREE.MeshPhongMaterial> | undefined;
+    if (globe) {
+      globe.material.color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
+    }
+     const dots = scene.children.find(child => child instanceof THREE.Points) as THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial> | undefined;
+    if(dots){
+        dots.material.color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+    }
   }, [theme]);
 
 
-  return <div ref={mountRef} className="absolute inset-0 z-0 h-full w-full opacity-30" />;
+  return <div ref={mountRef} className="absolute inset-0 z-0 h-full w-full opacity-50" />;
 };
 
 export default ThreeScene;
