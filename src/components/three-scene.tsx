@@ -27,26 +27,26 @@ const ThreeScene = () => {
     currentMount.appendChild(renderer.domElement);
     
     // Globe
-    const globeGeometry = new THREE.SphereGeometry(2, 32, 32);
+    const globeGeometry = new THREE.SphereGeometry(2.2, 32, 32);
     const globeMaterial = new THREE.MeshPhongMaterial({
       color: theme === 'dark' ? 0x444444 : 0xcccccc,
       wireframe: true,
       transparent: true,
-      opacity: 0.2
+      opacity: 0.3
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     scene.add(globe);
 
     // Glowing dots
-    const dotCount = 200;
+    const dotCount = 300;
     const dotVertices = [];
     for (let i = 0; i < dotCount; i++) {
         const phi = Math.acos(-1 + (2 * i) / dotCount);
         const theta = Math.sqrt(dotCount * Math.PI) * phi;
 
-        const x = 2.1 * Math.cos(theta) * Math.sin(phi);
-        const y = 2.1 * Math.sin(theta) * Math.sin(phi);
-        const z = 2.1 * Math.cos(phi);
+        const x = 2.3 * Math.cos(theta) * Math.sin(phi);
+        const y = 2.3 * Math.sin(theta) * Math.sin(phi);
+        const z = 2.3 * Math.cos(phi);
         
         dotVertices.push(x, y, z);
     }
