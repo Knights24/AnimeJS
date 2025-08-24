@@ -1,18 +1,12 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import PersonalizedGreeting from '@/components/personalized-greeting';
 import { ArrowRight } from 'lucide-react';
 
-const ThreeScene = dynamic(() => import('@/components/three-scene'), {
-  ssr: false,
-});
-
 const Hero = () => {
   return (
-    <section id="hero" className="relative h-[90vh] min-h-[700px] w-full">
-      <div className="relative z-10 flex h-full items-center justify-center">
+    <section id="hero" className="relative h-[90vh] min-h-[700px] w-full flex items-center justify-center">
         <div className="container text-center max-w-4xl">
           <h1 className="font-headline text-5xl font-bold tracking-tighter sm:text-7xl lg:text-8xl">
             Vertex Portfolio
@@ -30,8 +24,6 @@ const Hero = () => {
             </a>
           </div>
         </div>
-      </div>
-      <ThreeScene />
     </section>
   );
 };

@@ -78,10 +78,10 @@ const ThreeScene = () => {
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
     const starMaterial = new THREE.PointsMaterial({
-        size: 0.015,
+        size: 0.02,
         color: 0xaaaaaa,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.9
     });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
@@ -181,7 +181,7 @@ const ThreeScene = () => {
   }, [isHovering]);
 
 
-  return <div ref={mountRef} className="absolute inset-0 z-0 h-full w-full opacity-50" />;
+  return <div ref={mountRef} className="fixed inset-0 z-0 h-full w-full opacity-50" />;
 };
 
 export default ThreeScene;

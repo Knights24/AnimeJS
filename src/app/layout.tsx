@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import SceneProvider from '@/components/scene-provider';
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -31,7 +32,10 @@ export default function RootLayout({
         fontSans.variable,
         fontHeading.variable
       )}>
-          {children}
+          <SceneProvider />
+          <div className="relative z-10">
+            {children}
+          </div>
           <Toaster />
       </body>
     </html>
