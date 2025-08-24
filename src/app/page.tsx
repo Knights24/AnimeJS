@@ -7,13 +7,15 @@ import Footer from "@/components/layout/footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen backdrop-blur-lg">
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
         <Hero />
-        <About />
-        <Projects />
-        <Contact />
+        <div className="backdrop-blur-lg">
+          <About />
+          <Projects />
+          <Contact />
+        </div>
       </main>
       <Footer />
     </div>

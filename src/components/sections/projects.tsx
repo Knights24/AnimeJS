@@ -45,7 +45,7 @@ const projectsData = [
 
 const Projects = () => {
   return (
-    <section id="projects" className="py-24 lg:py-32 bg-secondary">
+    <section id="projects" className="py-24 lg:py-32">
       <div className="container">
         <div className="text-center mb-16">
           <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">My Work</h2>
@@ -53,7 +53,7 @@ const Projects = () => {
         </div>
         <div className="grid gap-10 md:grid-cols-2">
           {projectsData.map((project) => (
-            <Card key={project.title} className="bg-card transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 flex flex-col">
+            <Card key={project.title} className="bg-card/80 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 flex flex-col">
               <Image
                 src={project.image}
                 alt={project.title}

@@ -12,18 +12,24 @@ const About = () => {
     <section id="about" className="py-24 lg:py-32">
       <div className="container grid gap-12 lg:grid-cols-2 lg:gap-24 items-center">
         <div className="space-y-6">
-          <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">About Me</h2>
-          <div className="space-y-4 text-lg text-foreground/80">
-            <p>
-              I'm a passionate developer with a knack for creating beautiful, functional, and user-centric digital experiences. With a background in both design and engineering, I bridge the gap between aesthetics and performance to deliver outstanding web applications.
-            </p>
-            <p>
-              When I'm not coding, you can find me exploring the latest in 3D graphics, contributing to open-source projects, or searching for the perfect cup of coffee.
-            </p>
-          </div>
+          <Card className="bg-card/80">
+            <CardHeader>
+              <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">About Me</h2>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 text-lg text-foreground/80">
+                <p>
+                  I'm a passionate developer with a knack for creating beautiful, functional, and user-centric digital experiences. With a background in both design and engineering, I bridge the gap between aesthetics and performance to deliver outstanding web applications.
+                </p>
+                <p>
+                  When I'm not coding, you can find me exploring the latest in 3D graphics, contributing to open-source projects, or searching for the perfect cup of coffee.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
         <div className="flex items-center justify-center">
-          <Card className="w-full max-w-md bg-card">
+          <Card className="w-full max-w-md bg-card/80">
             <CardHeader>
               <CardTitle className="font-headline text-2xl">My Skillset</CardTitle>
             </CardHeader>
