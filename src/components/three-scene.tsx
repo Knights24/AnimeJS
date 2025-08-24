@@ -51,39 +51,19 @@ const ThreeScene = () => {
     const posArray = new Float32Array(pointsCount * 3);
     const r = 2.5;
 
-    const continents = [
-      // Americas
-      { lon: [-130, -30], lat: [-60, 70], density: 0.7 },
-      // Eurasia & Africa
-      { lon: [-20, 150], lat: [-40, 70], density: 1.0 },
-       // Australia
-      { lon: [110, 150], lat: [-45, -10], density: 0.4 },
-    ];
-    
-    let pointIndex = 0;
+    for (let i = 0; i < pointsCount; i++) {
+      const u = Math.random();
+      const v = Math.random();
+      const theta = 2 * Math.PI * u;
+      const phi = Math.acos(2 * v - 1);
+      
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
 
-    continents.forEach(continent => {
-        const numPoints = Math.floor(pointsCount * continent.density / 2.1);
-        for (let i = 0; i < numPoints && pointIndex < pointsCount; i++) {
-            const lon = (Math.random() * (continent.lon[1] - continent.lon[0]) + continent.lon[0]) * (Math.PI / 180);
-            const lat = (Math.random() * (continent.lat[1] - continent.lat[0]) + continent.lat[0]) * (Math.PI / 180);
-            
-            const x = r * Math.cos(lat) * Math.cos(lon);
-            const y = r * Math.sin(lat);
-            const z = r * Math.cos(lat) * Math.sin(lon);
-            
-            posArray[pointIndex * 3 + 0] = x;
-            posArray[pointIndex * 3 + 1] = y;
-            posArray[pointIndex * 3 + 2] = z;
-            pointIndex++;
-        }
-    });
-
-    // Fill remaining with random for oceans (make them very sparse)
-    for (let i = pointIndex; i < pointsCount; i++) {
-        posArray[i*3+0] = 0;
-        posArray[i*3+1] = 0;
-        posArray[i*3+2] = 0;
+      posArray[i * 3 + 0] = x;
+      posArray[i * 3 + 1] = y;
+      posArray[i * 3 + 2] = z;
     }
 
 
