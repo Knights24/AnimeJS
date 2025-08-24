@@ -13,6 +13,7 @@ const ThreeScene = () => {
   const pointsRef = useRef<THREE.Points | null>(null);
   const starsRef = useRef<THREE.Points | null>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -111,9 +112,15 @@ const ThreeScene = () => {
     }
     document.addEventListener('mousemove', handleMouseMove);
 
+    const handleScroll = () => {
+      scrollYRef.current = window.scrollY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     const animate = () => {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
+      const scrollOffset = scrollYRef.current * 0.001;
       
       if(globeRef.current){
         globeRef.current.rotation.y = elapsedTime * 0.1;
@@ -126,6 +133,7 @@ const ThreeScene = () => {
       }
      
       if (cameraRef.current && globeRef.current) {
+        cameraRef.current.position.z = 5 - scrollOffset;
         raycaster.setFromCamera(mouse, cameraRef.current);
         const intersects = raycaster.intersectObject(globeRef.current);
         
@@ -153,6 +161,7 @@ const ThreeScene = () => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('mousemove', handleMouseMove);
       if (currentMount && renderer.domElement) {
         currentMount.removeChild(renderer.domElement);
