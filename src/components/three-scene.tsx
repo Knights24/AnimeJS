@@ -36,10 +36,10 @@ const ThreeScene = () => {
     // Globe
     const globeGeometry = new THREE.SphereGeometry(2.5, 64, 64);
     const globeMaterial = new THREE.MeshPhongMaterial({
-      color: 0x444444,
+      color: 0x6A478F,
       wireframe: true,
       transparent: true,
-      opacity: 0.3
+      opacity: 0.6
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     scene.add(globe);
@@ -60,7 +60,7 @@ const ThreeScene = () => {
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
         size: 0.02,
-        color: 0x00aaff,
+        color: 0xB19CD9,
         transparent: true,
         blending: THREE.AdditiveBlending,
     });
@@ -92,11 +92,11 @@ const ThreeScene = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const pointLight1 = new THREE.PointLight(0x00aaff, 1);
+    const pointLight1 = new THREE.PointLight(0xB19CD9, 1);
     pointLight1.position.set(5, 3, 5);
     scene.add(pointLight1);
     
-    const pointLight2 = new THREE.PointLight(0xffaa00, 1);
+    const pointLight2 = new THREE.PointLight(0x6A478F, 1);
     pointLight2.position.set(-5, -3, -5);
     scene.add(pointLight2);
     
@@ -120,8 +120,12 @@ const ThreeScene = () => {
     const animate = () => {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
-      const scrollOffset = scrollYRef.current * 0.001;
       
+      const scrollY = scrollYRef.current;
+      // Define a threshold for scrolling, e.g., the height of the hero section.
+      const scrollThreshold = window.innerHeight * 0.9;
+      const scrollOffset = Math.min(scrollY, scrollThreshold) * 0.001;
+
       if(globeRef.current){
         globeRef.current.rotation.y = elapsedTime * 0.1;
       }
@@ -182,9 +186,9 @@ const ThreeScene = () => {
     const globe = globeRef.current;
     if (globe) {
       if(isHovering) {
-        (globe.material as THREE.MeshPhongMaterial).color.set(0x00aaff);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0xB19CD9);
       } else {
-        (globe.material as THREE.MeshPhongMaterial).color.set(0x444444);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0x6A478F);
       }
     }
   }, [isHovering]);
