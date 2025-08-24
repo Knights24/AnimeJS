@@ -22,7 +22,7 @@ const ThreeScene = () => {
     currentMount.appendChild(renderer.domElement);
 
     const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 16);
-    const material = new THREE.MeshStandardMaterial({ color: 0xB19CD9, roughness: 0.3, metalness: 0.7 });
+    const material = new THREE.MeshStandardMaterial({ color: 0xFBBF24, roughness: 0.3, metalness: 0.7 });
     const torusKnot = new THREE.Mesh(geometry, material);
     scene.add(torusKnot);
 
