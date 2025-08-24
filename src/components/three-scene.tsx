@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { useTheme } from 'next-themes';
 
 const ThreeScene = () => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -21,8 +23,13 @@ const ThreeScene = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     currentMount.appendChild(renderer.domElement);
 
+    const material = new THREE.MeshStandardMaterial({
+      color: theme === 'dark' ? 0xffffff : 0x1a1a1a,
+      roughness: 0.3,
+      metalness: 0.7 
+    });
+    
     const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 16);
-    const material = new THREE.MeshStandardMaterial({ color: 0xFBBF24, roughness: 0.3, metalness: 0.7 });
     const torusKnot = new THREE.Mesh(geometry, material);
     scene.add(torusKnot);
 
@@ -85,6 +92,15 @@ const ThreeScene = () => {
       material.dispose();
     };
   }, []);
+  
+  // Update material color when theme changes
+  useEffect(() => {
+      const mesh = scene.children.find(child => child instanceof THREE.Mesh) as THREE.Mesh<THREE.TorusKnotGeometry, THREE.MeshStandardMaterial> | undefined;
+      if (mesh) {
+        mesh.material.color.set(theme === 'dark' ? 0xffffff : 0x1a1a1a);
+      }
+  }, [theme]);
+
 
   return <div ref={mountRef} className="absolute inset-0 z-0 h-full w-full opacity-30" />;
 };

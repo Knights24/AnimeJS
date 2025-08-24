@@ -23,7 +23,7 @@ const Hero = () => {
           <PersonalizedGreeting />
           <div className="mt-8 flex justify-center gap-4">
             <a href="#projects">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button size="lg">
                 View My Work
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
