@@ -9,6 +9,10 @@ const ThreeScene = () => {
   const { theme } = useTheme();
   
   const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const globeRef = useRef<THREE.Mesh | null>(null);
+  const particlesRef = useRef<THREE.Points | null>(null);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -20,14 +24,15 @@ const ThreeScene = () => {
 
     const camera = new THREE.PerspectiveCamera(75, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
     camera.position.z = 5;
+    cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     currentMount.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
     
-    // Globe
-    const globeGeometry = new THREE.SphereGeometry(2.2, 32, 32);
+    const globeGeometry = new THREE.SphereGeometry(2.2, 64, 64);
     const globeMaterial = new THREE.MeshPhongMaterial({
       color: theme === 'dark' ? 0x444444 : 0xcccccc,
       wireframe: true,
@@ -36,33 +41,25 @@ const ThreeScene = () => {
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     scene.add(globe);
-
-    // Glowing dots
-    const dotCount = 300;
-    const dotVertices = [];
-    for (let i = 0; i < dotCount; i++) {
-        const phi = Math.acos(-1 + (2 * i) / dotCount);
-        const theta = Math.sqrt(dotCount * Math.PI) * phi;
-
-        const x = 2.3 * Math.cos(theta) * Math.sin(phi);
-        const y = 2.3 * Math.sin(theta) * Math.sin(phi);
-        const z = 2.3 * Math.cos(phi);
-        
-        dotVertices.push(x, y, z);
-    }
-
-    const dotGeometry = new THREE.BufferGeometry();
-    dotGeometry.setAttribute('position', new THREE.Float32BufferAttribute(dotVertices, 3));
+    globeRef.current = globe;
     
-    const dotMaterial = new THREE.PointsMaterial({
-        color: 0x00aaff,
-        size: 0.05,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        sizeAttenuation: true
+    const starVertices = [];
+    for (let i = 0; i < 10000; i++) {
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        const z = (Math.random() - 0.5) * 2000;
+        if(new THREE.Vector3(x,y,z).length() > 200) starVertices.push(x, y, z);
+    }
+    const starGeometry = new THREE.BufferGeometry();
+    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const starMaterial = new THREE.PointsMaterial({
+        color: 0x888888,
+        size: 0.1,
+        transparent: true
     });
-    const dots = new THREE.Points(dotGeometry, dotMaterial);
-    scene.add(dots);
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+    particlesRef.current = stars;
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -76,34 +73,95 @@ const ThreeScene = () => {
     pointLight2.position.set(-5, -5, -5);
     scene.add(pointLight2);
 
-    let mouseX = 0;
-    let mouseY = 0;
+    const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+
     const handleMouseMove = (event: MouseEvent) => {
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     }
+
+    const handleClick = () => {
+        if (!camera || !globe) return;
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(globe);
+
+        if (intersects.length > 0) {
+            const intersectionPoint = intersects[0].point;
+            createRipple(intersectionPoint);
+        }
+    }
+    
+    const createRipple = (position: THREE.Vector3) => {
+        const rippleGeometry = new THREE.TorusGeometry(0.1, 0.05, 16, 100);
+        const rippleMaterial = new THREE.MeshBasicMaterial({ color: 0x00aaff, side: THREE.DoubleSide, transparent: true });
+        const ripple = new THREE.Mesh(rippleGeometry, rippleMaterial);
+        
+        ripple.position.copy(position);
+        ripple.lookAt(new THREE.Vector3(0,0,0));
+        scene.add(ripple);
+
+        let scale = 1;
+        let opacity = 1;
+        const animateRipple = () => {
+            scale += 0.1;
+            opacity -= 0.025;
+            ripple.scale.set(scale, scale, scale);
+            ripple.material.opacity = opacity;
+
+            if (opacity > 0) {
+                requestAnimationFrame(animateRipple);
+            } else {
+                scene.remove(ripple);
+                rippleGeometry.dispose();
+                rippleMaterial.dispose();
+            }
+        };
+        animateRipple();
+    }
+
+
     document.addEventListener('mousemove', handleMouseMove);
-
+    currentMount.addEventListener('click', handleClick);
+    
     const clock = new THREE.Clock();
-
+    let isHovering = false;
+    
     const animate = () => {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
       
-      globe.rotation.y = elapsedTime * 0.1;
-      dots.rotation.y = elapsedTime * 0.1;
-
-      // Make it react to mouse movement
-      camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.02;
-      camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
+      if(globe){
+        globe.rotation.y = elapsedTime * 0.1;
+      }
+      if(stars){
+        stars.rotation.y = elapsedTime * 0.02;
+      }
+     
+      if (camera && globe) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(globe);
+        
+        if (intersects.length > 0) {
+            if (!isHovering) {
+                isHovering = true;
+                (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+            }
+        } else {
+            if (isHovering) {
+                isHovering = false;
+                (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
+            }
+        }
+      }
 
       renderer.render(scene, camera);
     };
     animate();
 
     const handleResize = () => {
-      if (currentMount) {
+      if (currentMount && renderer && camera) {
         const width = currentMount.clientWidth;
         const height = currentMount.clientHeight;
         renderer.setSize(width, height);
@@ -117,29 +175,23 @@ const ThreeScene = () => {
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('mousemove', handleMouseMove);
       if (currentMount) {
+        currentMount.removeEventListener('click', handleClick);
         currentMount.removeChild(renderer.domElement);
       }
       renderer.dispose();
       globeGeometry.dispose();
       globeMaterial.dispose();
-      dotGeometry.dispose();
-      dotMaterial.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Update material color when theme changes
   useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene) return;
-      
-    const globe = scene.children.find(child => child instanceof THREE.Mesh) as THREE.Mesh<THREE.SphereGeometry, THREE.MeshPhongMaterial> | undefined;
+    const globe = globeRef.current;
     if (globe) {
-      globe.material.color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
-    }
-     const dots = scene.children.find(child => child instanceof THREE.Points) as THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial> | undefined;
-    if(dots){
-        dots.material.color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+      (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x444444 : 0xcccccc);
     }
   }, [theme]);
 
