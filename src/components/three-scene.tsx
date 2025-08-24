@@ -80,10 +80,10 @@ const ThreeScene = () => {
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
     const starMaterial = new THREE.PointsMaterial({
-        size: 0.01,
+        size: 0.015,
         color: theme === 'dark' ? 0xaaaaaa : 0x555555,
         transparent: true,
-        opacity: 0.5
+        opacity: 0.8
     });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
@@ -156,7 +156,7 @@ const ThreeScene = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('mousemove', handleMouseMove);
-      if (currentMount) {
+      if (currentMount && renderer.domElement) {
         currentMount.removeChild(renderer.domElement);
       }
       renderer.dispose();
