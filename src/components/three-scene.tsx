@@ -13,6 +13,7 @@ const ThreeScene = () => {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const globeRef = useRef<THREE.Mesh | null>(null);
   const pointsRef = useRef<THREE.Points | null>(null);
+  const starsRef = useRef<THREE.Points | null>(null);
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
@@ -68,6 +69,26 @@ const ThreeScene = () => {
     scene.add(points);
     pointsRef.current = points;
 
+    // Starfield
+    const starGeometry = new THREE.BufferGeometry();
+    const starCount = 5000;
+    const starPosArray = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+        starPosArray[i*3+0] = (Math.random() - 0.5) * 20;
+        starPosArray[i*3+1] = (Math.random() - 0.5) * 20;
+        starPosArray[i*3+2] = (Math.random() - 0.5) * 20;
+    }
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
+    const starMaterial = new THREE.PointsMaterial({
+        size: 0.01,
+        color: theme === 'dark' ? 0xaaaaaa : 0x555555,
+        transparent: true,
+        opacity: 0.5
+    });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+    starsRef.current = stars;
+
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
@@ -101,6 +122,9 @@ const ThreeScene = () => {
       }
       if(pointsRef.current){
         pointsRef.current.rotation.y = elapsedTime * 0.1;
+      }
+      if (starsRef.current) {
+        starsRef.current.rotation.y = elapsedTime * 0.02;
       }
      
       if (cameraRef.current && globeRef.current) {
@@ -140,6 +164,8 @@ const ThreeScene = () => {
       globeMaterial.dispose();
       pointsGeometry.dispose();
       pointsMaterial.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -157,6 +183,10 @@ const ThreeScene = () => {
     const points = pointsRef.current;
     if (points) {
       (points.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+    }
+    const stars = starsRef.current;
+    if (stars) {
+      (stars.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0xaaaaaa : 0x555555);
     }
   }, [theme, isHovering]);
 
