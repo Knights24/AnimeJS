@@ -1,5 +1,4 @@
 import { Code } from 'lucide-react';
-import { ThemeToggle } from '../theme-toggle';
 
 const Header = () => {
   const navLinks = [
@@ -26,9 +25,6 @@ const Header = () => {
             </a>
           ))}
         </nav>
-        <div className="flex items-center justify-end flex-1">
-          <ThemeToggle />
-        </div>
       </div>
     </header>
   );

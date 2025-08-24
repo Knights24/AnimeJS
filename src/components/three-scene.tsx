@@ -2,11 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { useTheme } from 'next-themes';
 
 const ThreeScene = () => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
   
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -37,7 +35,7 @@ const ThreeScene = () => {
     // Globe
     const globeGeometry = new THREE.SphereGeometry(2.5, 64, 64);
     const globeMaterial = new THREE.MeshPhongMaterial({
-      color: theme === 'dark' ? 0x444444 : 0x555555,
+      color: 0x444444,
       wireframe: true,
       transparent: true,
       opacity: 0.2
@@ -61,7 +59,7 @@ const ThreeScene = () => {
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
         size: 0.015,
-        color: theme === 'dark' ? 0x00aaff : 0x0033aa,
+        color: 0x00aaff,
         transparent: true,
         blending: THREE.AdditiveBlending,
     });
@@ -81,7 +79,7 @@ const ThreeScene = () => {
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
     const starMaterial = new THREE.PointsMaterial({
         size: 0.015,
-        color: theme === 'dark' ? 0xaaaaaa : 0x555555,
+        color: 0xaaaaaa,
         transparent: true,
         opacity: 0.8
     });
@@ -175,20 +173,12 @@ const ThreeScene = () => {
     const globe = globeRef.current;
     if (globe) {
       if(isHovering) {
-        (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0055aa);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0x00aaff);
       } else {
-        (globe.material as THREE.MeshPhongMaterial).color.set(theme === 'dark' ? 0x444444 : 0x555555);
+        (globe.material as THREE.MeshPhongMaterial).color.set(0x444444);
       }
     }
-    const points = pointsRef.current;
-    if (points) {
-      (points.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0x00aaff : 0x0033aa);
-    }
-    const stars = starsRef.current;
-    if (stars) {
-      (stars.material as THREE.PointsMaterial).color.set(theme === 'dark' ? 0xaaaaaa : 0x555555);
-    }
-  }, [theme, isHovering]);
+  }, [isHovering]);
 
 
   return <div ref={mountRef} className="absolute inset-0 z-0 h-full w-full opacity-50" />;
