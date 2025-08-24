@@ -38,7 +38,7 @@ const ThreeScene = () => {
       color: 0x444444,
       wireframe: true,
       transparent: true,
-      opacity: 0.2
+      opacity: 0.3
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     scene.add(globe);
@@ -58,7 +58,7 @@ const ThreeScene = () => {
     }
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
-        size: 0.015,
+        size: 0.02,
         color: 0x00aaff,
         transparent: true,
         blending: THREE.AdditiveBlending,
@@ -78,10 +78,10 @@ const ThreeScene = () => {
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
     const starMaterial = new THREE.PointsMaterial({
-        size: 0.02,
+        size: 0.025,
         color: 0xaaaaaa,
         transparent: true,
-        opacity: 0.9
+        opacity: 0.95
     });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
@@ -181,7 +181,7 @@ const ThreeScene = () => {
   }, [isHovering]);
 
 
-  return <div ref={mountRef} className="fixed inset-0 z-0 h-full w-full opacity-50" />;
+  return <div ref={mountRef} className="fixed inset-0 z-0 h-full w-full opacity-70" />;
 };
 
 export default ThreeScene;
