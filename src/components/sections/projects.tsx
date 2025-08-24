@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Github, ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const projectsData = [
   {
@@ -52,26 +53,27 @@ const Projects = () => {
         </div>
         <div className="grid gap-8 md:grid-cols-2">
           {projectsData.map((project) => (
-            <Card key={project.title} className="bg-card transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2">
+            <Card key={project.title} className="bg-card transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 flex flex-col">
+              <Image
+                src={project.image}
+                alt={project.title}
+                width={600}
+                height={400}
+                className="rounded-t-lg aspect-video object-cover"
+                data-ai-hint={project.imageHint}
+              />
               <CardHeader>
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  width={600}
-                  height={400}
-                  className="rounded-t-lg aspect-video object-cover"
-                  data-ai-hint={project.imageHint}
-                />
                 <CardTitle className="font-headline pt-4">{project.title}</CardTitle>
                 <CardDescription>{project.description}</CardDescription>
               </CardHeader>
-              <CardContent>
-                {/* Future content if needed */}
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <div>
-                   {/* Tags can be added here if desired */}
+              <CardContent className="flex-grow">
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                  ))}
                 </div>
+              </CardContent>
+              <CardFooter className="flex justify-end">
                 <div className="flex gap-2">
                   <a href={project.githubLink} target="_blank" rel="noopener noreferrer">
                     <Button variant="ghost" size="icon">

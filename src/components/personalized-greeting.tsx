@@ -32,7 +32,7 @@ const PersonalizedGreeting = () => {
   }, []);
 
   return (
-    <p className="mt-4 text-lg text-accent animate-pulse font-medium">
+    <p className="mt-4 text-lg text-accent font-medium">
       {greeting}
     </p>
   );
