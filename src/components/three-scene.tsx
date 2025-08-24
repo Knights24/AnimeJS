@@ -39,30 +39,62 @@ const ThreeScene = () => {
       color: 0x6A478F,
       wireframe: true,
       transparent: true,
-      opacity: 0.6
+      opacity: 0.8
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     scene.add(globe);
     globeRef.current = globe;
 
-    // Glowing points
+    // Earth-like points
     const pointsGeometry = new THREE.BufferGeometry();
-    const pointsCount = 2000;
+    const pointsCount = 4000;
     const posArray = new Float32Array(pointsCount * 3);
-    for (let i = 0; i < pointsCount * 3; i++) {
+    const r = 2.5;
+
+    const continents = [
+      // Americas
+      { lon: [-130, -30], lat: [-60, 70], density: 0.7 },
+      // Eurasia & Africa
+      { lon: [-20, 150], lat: [-40, 70], density: 1.0 },
+       // Australia
+      { lon: [110, 150], lat: [-45, -10], density: 0.4 },
+    ];
+    
+    let pointIndex = 0;
+
+    continents.forEach(continent => {
+        const numPoints = Math.floor(pointsCount * continent.density / 2.1);
+        for (let i = 0; i < numPoints && pointIndex < pointsCount; i++) {
+            const lon = (Math.random() * (continent.lon[1] - continent.lon[0]) + continent.lon[0]) * (Math.PI / 180);
+            const lat = (Math.random() * (continent.lat[1] - continent.lat[0]) + continent.lat[0]) * (Math.PI / 180);
+            
+            const x = r * Math.cos(lat) * Math.cos(lon);
+            const y = r * Math.sin(lat);
+            const z = r * Math.cos(lat) * Math.sin(lon);
+            
+            posArray[pointIndex * 3 + 0] = x;
+            posArray[pointIndex * 3 + 1] = y;
+            posArray[pointIndex * 3 + 2] = z;
+            pointIndex++;
+        }
+    });
+
+    // Fill remaining with random for oceans
+    for (let i = pointIndex; i < pointsCount; i++) {
         const theta = Math.random() * 2 * Math.PI;
         const phi = Math.acos(2 * Math.random() - 1);
-        const r = 2.5;
         posArray[i*3+0] = r * Math.sin(phi) * Math.cos(theta);
         posArray[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
         posArray[i*3+2] = r * Math.cos(phi);
     }
+
     pointsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const pointsMaterial = new THREE.PointsMaterial({
-        size: 0.02,
+        size: 0.03,
         color: 0xB19CD9,
         transparent: true,
         blending: THREE.AdditiveBlending,
+        opacity: 0.9,
     });
     const points = new THREE.Points(pointsGeometry, pointsMaterial);
     scene.add(points);
@@ -79,7 +111,7 @@ const ThreeScene = () => {
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPosArray, 3));
     const starMaterial = new THREE.PointsMaterial({
-        size: 0.025,
+        size: 0.035,
         color: 0xaaaaaa,
         transparent: true,
         opacity: 0.95
@@ -122,7 +154,6 @@ const ThreeScene = () => {
       const elapsedTime = clock.getElapsedTime();
       
       const scrollY = scrollYRef.current;
-      // Define a threshold for scrolling, e.g., the height of the hero section.
       const scrollThreshold = window.innerHeight * 0.9;
       const scrollOffset = Math.min(scrollY, scrollThreshold) * 0.001;
 
